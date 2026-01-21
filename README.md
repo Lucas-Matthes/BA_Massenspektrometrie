@@ -12,9 +12,7 @@ Dieses Projekt enthält die Pipeline zur Analyse von Massenspektrometerdaten:
 
 ## Installs
 
-pip install numpy pandas scipy scikit-learn joblib matplotlib seaborn
-pip install kneed
-pip install openpyxl
+pip install -r requirements.txt
 
 ## Ausführen
 
