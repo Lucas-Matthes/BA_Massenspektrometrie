@@ -7,12 +7,10 @@ venv/
 .env/
 
 # Output-Dateien
-data/output/
-!data/output/.gitkeep
+data/output/*
 
 # Modelle
-src/models/
-!src/models/.gitkeep
+src/models/*
 
 # Alte Experimente
 legacy/
