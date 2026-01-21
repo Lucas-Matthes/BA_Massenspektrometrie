@@ -34,3 +34,4 @@ src
 
 foldertree.text                 //YOU ARE HERE
 README.txt                      //Anleitung zu Setup, Ausführung
+reuirements.txt                 //Umgebungssnapshot
