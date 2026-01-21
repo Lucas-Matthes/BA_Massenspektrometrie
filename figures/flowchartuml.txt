@@ -1,0 +1,25 @@
+@startuml
+rectangle "Raw Data" as RD
+rectangle "Data Extraction\n\nuses Hyperparameters\n- extract_main.py \n- extract_novel.py" as DE
+rectangle "Hyperparamter Optimization\n\n- looper.py" as HO
+rectangle "Evaluation\n\n- rfLoocv.py" as ERF
+rectangle "Random Forest\n\nusese Hyperparamter\n- build_rf.py" as RF
+rectangle "Vectorize\n\n- vectorize.py" as V
+rectangle "DBSCAN Fit\n\nfor Novelty Detection\n- fit_db.py\n- evaluate_db.py" as DB
+rectangle "Compound Classifier\n\n- build_cc.py" as CC
+rectangle "Evaluation\n\n- evaluate_all + evaluate_db\n- Outputs: Accuracy, SEM" as ECC
+
+RD -d-> DE
+DE -d-> RF : main.csv
+HO -r-> DE
+ERF -u-> HO
+RF -l-> ERF
+HO --> RF
+V--> DB : vectors.csv
+RF --> CC : rf_model
+DE --> V : main.csv
+RF --> V : rf_model
+DB --> CC : dbscan_classifier
+CC --> ECC : compound_classifier
+DE -[#red]-> ECC : novel.csv
+@enduml
