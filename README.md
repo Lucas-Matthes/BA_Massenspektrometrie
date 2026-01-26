@@ -1,4 +1,4 @@
-# BA Massenspektrometer Pipeline
+# BA Massenspektrometrie Pipeline
 
 Dieses Projekt enthält die Pipeline zur Analyse von Massenspektrometerdaten:
 - Feature-Extraktion aus Excel-Dateien
