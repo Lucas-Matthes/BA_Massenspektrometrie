@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtuelle Umgebung
+venv/
+.env/
+
+# Output-Dateien
+data/output/*
+!data/output/.gitkeep
+
+# Modelle
+src/models/*
+!src/models/.gitkeep
+
+# Alte Experimente
+legacy/
+
+# OS Files
+.DS_Store
+Thumbs.db

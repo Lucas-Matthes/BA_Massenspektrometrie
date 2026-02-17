@@ -1,0 +1,37 @@
+data
+-main                           //Trainingsdaten
+-novel                          //Testdaten für Outlier
+-output
+--main.csv
+--novel.csv
+-info.txt                       //Derzeitige Daten in data
+
+figures                         //Diagramme für die BA
+
+legacy                          //Alte Projektteile
+
+src
+-compound_classifier
+--build_cc.py
+--compound_classifier.py
+--evaluate_cc.py		        //Tested cc auf den Testdaten in 4 Kategorien geteilt
+-data_extraction
+--extract_main.py
+--extract_novel.py
+-dbscan
+--evaluate_db.py		        //Gibt Informationen zur DBSCAN Instanz (Accuracy auf Trainingsdaten, Max In-Cluster-Abstand)
+--fit_db.py		                //Generiert DBSCAN Instanz
+-models
+--compound_classifier.pkl       //Gibt rf_build Output aus wenn Inlier, sonst "unkown" Label 
+--dbscan_classifier.pkl	        //Binäre Funktion für neue Daten, Inlier/Outlier
+--rf_model.joblib		        //Random Forest Klassifikator
+--vectors.csv
+-random_forest
+--build_rf.py		            //Generiert Ranfom Forest
+--looper.py		                //Hyperparameter Loop für Random Forest Fitting
+--rfLoocv.py		            //Loocv evaluation für Random Forest Klassifikator
+--vectorize.py		            //Wandelt die Trainingsdaten in Votingvektoren um
+
+foldertree.text                 //YOU ARE HERE
+README.txt                      //Anleitung zu Setup, Ausführung
+reuirements.txt                 //Umgebungssnapshot
