@@ -9,6 +9,7 @@ import seaborn as sns
 from data_extraction.extract_main import process_folder
 from random_forest.rfLoocv import run_loocv
 from src.paths import DATA_DIR
+from src.paths import MAIN_DATA
 from src.paths import MAIN_CSV
 
 
@@ -19,10 +20,10 @@ def sweep_estimators(sheet="200", peak_count=5, bin_size=0.05, sort_method="int"
     accuracies, sems = [], []
 
     # Main-Daten einml erzeugen
-    process_folder(DATA_DIR, MAIN_CSV, count=peak_count, bin_size=bin_size, sheet=sheet, sort_method=sort_method)
+    process_folder(MAIN_DATA, MAIN_CSV, count=peak_count, bin_size=bin_size, sheet=sheet, sort_method=sort_method)
 
     for n in estimators:
-        mean_acc, sem_acc = run_loocv(MAIN_CSV, n_estimators=n)
+        mean_acc, sem_acc, _ = run_loocv(MAIN_CSV, n_estimators=n, suppressMatrix=True)
         accuracies.append(mean_acc)
         sems.append(sem_acc)
 
@@ -35,10 +36,12 @@ def sweep_estimators(sheet="200", peak_count=5, bin_size=0.05, sort_method="int"
     plt.ylabel("Accuracy")
     plt.title(f"Accuracy vs. n_estimators ({sheet} eV, {peak_count} peaks, bin={bin_size}, {sort_method})")
     plt.ylim(0, 1)
+
+    # plt.savefig("estimatorplot.svg", bbox_inches="tight")
     plt.show()
 
 
-def heatmap_peaks_bins(sheet="200", n_estimators=50, peak_counts=[1,3,5,10,20], bin_sizes=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5], sort_method="int"):
+def heatmap_peaks_bins(sheet="200", n_estimators=100, peak_counts=[1,3,5,10], bin_sizes=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5], sort_method="int"):
     """
     Brute-Force Heatmap: Accuracy für alle Kombinationen von Peak Count und Bin Size.
     """
@@ -47,8 +50,8 @@ def heatmap_peaks_bins(sheet="200", n_estimators=50, peak_counts=[1,3,5,10,20], 
     for i, p in enumerate(peak_counts):
         for j, b in enumerate(bin_sizes):
             # Main-Daten CSV erzeugen
-            process_folder(DATA_DIR, MAIN_CSV, count=p, bin_size=b, sheet=sheet, sort_method=sort_method)
-            mean_acc, _ = run_loocv(MAIN_CSV, n_estimators=n_estimators)
+            process_folder(MAIN_DATA, MAIN_CSV, count=p, bin_size=b, sheet=sheet, sort_method=sort_method)
+            mean_acc, _, _ = run_loocv(MAIN_CSV, n_estimators=n_estimators, suppressMatrix=True)
             results[i, j] = mean_acc
             print(f"Peak Count={p}, Bin Size={b}: Accuracy={mean_acc:.3f}")
 
@@ -57,6 +60,9 @@ def heatmap_peaks_bins(sheet="200", n_estimators=50, peak_counts=[1,3,5,10,20], 
     plt.xlabel("Bin Size")
     plt.ylabel("Peak Count")
     plt.title(f"Accuracy Heatmap ({sheet} eV, n_estimators={n_estimators}, sort={sort_method})")
+    
+    # Als svg speichern: (für paper)
+    # plt.savefig("heatmap.svg", bbox_inches="tight")
     plt.show()
 
 

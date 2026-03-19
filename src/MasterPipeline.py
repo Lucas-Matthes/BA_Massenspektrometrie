@@ -9,6 +9,7 @@ from src.dbscan.fit_db import auto_dbscan
 from src.dbscan.evaluate_db import evaluate_db
 from src.compound_classifier.build_cc import build_compound_classifier
 from src.compound_classifier.evaluate_cc import evaluate_all
+from src.random_forest.looper import sweep_estimators, heatmap_peaks_bins
 from src.paths import DATA_DIR
 from src.paths import MODELS_DIR
 from src.paths import OUTPUT_DIR
@@ -37,9 +38,9 @@ class MasterPipeline:
         eval_cc=False
     ):
         self.HO_run = HO_run
-        self.bin_array = bin_array if bin_array is not None else [0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0]
-        self.peak_array = peak_array if peak_array is not None else [1, 2, 5, 10, 15, 20, 25]
-        self.estimator_array = estimator_array if estimator_array is not None else [5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000]
+        self.bin_array = bin_array if bin_array is not None else [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+        self.peak_array = peak_array if peak_array is not None else [1, 3, 5, 10, 20]
+        self.estimator_array = estimator_array if estimator_array is not None else [10, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
         self.sheet = sheet
         self.count = count
         self.bin_size = bin_size
@@ -63,10 +64,9 @@ class MasterPipeline:
     def run(self):
         if self.HO_run:
             print("Running Hyperparameter Looper instead of full pipeline...")
-            from random_forest.looper import sweep_estimators, heatmap_peaks_bins
             # Beispielaufrufe für HO, evtl Parameter weiterreichen
             sweep_estimators(sheet=self.sheet, peak_count=self.count, bin_size=self.bin_size, sort_method=self.sort_method, estimators=self.estimator_array)
-            heatmap_peaks_bins(sheet=self.sheet, n_estimators=50, sort_method=self.sort_method, peak_counts=self.peak_array, bin_sizes=self.bin_array)
+            # heatmap_peaks_bins(sheet=self.sheet, n_estimators=self.n_estimators, sort_method=self.sort_method, peak_counts=self.peak_array, bin_sizes=self.bin_array)
             return
 
         # 1 Data Extraction
@@ -139,7 +139,10 @@ if __name__ == "__main__":
     from src.MasterPipeline import MasterPipeline
 
     pipeline = MasterPipeline(
-        eval_cc=True, eval_rf=False, eval_db=False, extract_novel=True,
-        n_estimators = 1000, count=5, bin_size=0.05, min_inlier_ratio=0.9
+        eval_cc=True, eval_rf=True, eval_db=True, extract_novel=True,
+        n_estimators = 1000, count=5, bin_size=0.05, min_inlier_ratio=0.9,
+        HO_run=False
     )
     pipeline.run()
+
+# python -m src.MasterPipeline

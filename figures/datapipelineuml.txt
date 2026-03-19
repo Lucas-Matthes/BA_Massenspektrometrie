@@ -1,0 +1,45 @@
+@startuml
+title Datenaufbereitung Pipeline für MS-Daten
+
+start
+:Rohdaten einlesen;
+note right 
+Sheet auswählen nach
+Fragmentationsenergie
+end note
+
+:Binning der m/z-Werte;
+note right #Orange
+Hyperparameter 1: Binninggröße
+z.B. 1 Da
+end note
+
+:TIC-Normalisierung der Intensitäten;
+note right
+Alle Intensitäten geteilt durch 
+Summe der Intensitäten
+end note
+
+:Top-Peaks auswählen;
+note right #Orange
+Hyperparameter 2: Anzahl der Peaks
+z.B. Top 10 Peaks
+end note
+
+:Datenpaare sortieren;
+note right #Orange
+Hyperparameter 3:
+- Nach m/z aufsteigend
+- Nach Intensität absteigend
+end note
+
+:Merkmalsvektor erzeugen;
+note right
+Vektorgröße = 2 * Anzahl Peaks
+[m/z, Intensität]
+end note
+
+:Output als CSV-Datei;
+
+stop
+@enduml

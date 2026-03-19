@@ -6,7 +6,7 @@ from sklearn.model_selection import LeaveOneOut
 import matplotlib.pyplot as plt
 from src.paths import MAIN_CSV
 
-def run_loocv(input_csv, n_estimators=50):
+def run_loocv(input_csv, n_estimators=50, suppressMatrix=False):
     """
     Führt LOOCV für den Random Forest auf der Main-Daten CSV durch.
     Gibt Accuracy und Standard Error (SEM) zurück.
@@ -14,6 +14,8 @@ def run_loocv(input_csv, n_estimators=50):
     df = pd.read_csv(input_csv).dropna()
     X = df.drop(["molekuelname"], axis=1)
     y = df["molekuelname"]
+
+    print("Samples:", len(X), input_csv)
 
     loo = LeaveOneOut()
     rf_model = RandomForestClassifier(n_estimators=n_estimators, random_state=42)
@@ -32,14 +34,17 @@ def run_loocv(input_csv, n_estimators=50):
     accuracies = (np.array(y_true) == np.array(y_pred)).astype(int)
     mean_acc = np.mean(accuracies)
     sem_acc = np.std(accuracies, ddof=1) / np.sqrt(len(accuracies))
+    cm = None
 
-     # Konfusionsmatrix erstellen
-    cm = confusion_matrix(y_true, y_pred, labels=np.unique(y))
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=np.unique(y))
-    disp.plot(cmap="Blues", xticks_rotation=45)
-    plt.title("Konfusionsmatrix")
-    plt.tight_layout()
-    plt.show()
+    # Konfusionsmatrix erstellen
+    if not suppressMatrix:
+        cm = confusion_matrix(y_true, y_pred, labels=np.unique(y))
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=np.unique(y))
+        disp.plot(cmap="Blues", xticks_rotation=45)
+        plt.title("Konfusionsmatrix")
+        plt.tight_layout()
+        plt.savefig("matrix.svg", bbox_inches="tight")
+        plt.show()
 
     print(f"LOOCV Ergebnis auf Main-Daten:")
     print(f"n_estimators = {n_estimators}")
